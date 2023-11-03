@@ -62,26 +62,66 @@ class JigsawVisionTransformer(VisionTransformer):
             # )  # ATTN: Original try: classifier head with three layers for small
 
             # For base model 768: h1
+            self.cls_head = nn.Sequential(
+                # input should be 27648
+                nn.Linear(self.embed_dim * self.num_patches, 16384),  # 27648 -> 16384
+                nn.ReLU(),
+                nn.Linear(16384, 4096),
+                nn.ReLU(),
+                nn.Linear(4096, self.num_classes),
+                nn.BatchNorm1d(self.num_classes),
+            )
+
+            # For base model 768: h2
             # self.cls_head = nn.Sequential(
-            #     # input should be 27648
-            #     nn.Linear(self.embed_dim * self.num_patches, 16384),  # 27648 -> 16384
+            #     nn.Linear(self.embed_dim * self.num_patches, 4096),  # 27648 -> 16384
             #     nn.ReLU(),
-            #     nn.Linear(16384, 4096),
-            #     nn.ReLU(),
-            #     # nn.Linear(self.embed_dim * self.num_patches, self.num_classes),
             #     nn.Linear(4096, self.num_classes),
             #     nn.BatchNorm1d(self.num_classes),
             # )
 
-            # For base model 768: h2
-            self.cls_head = nn.Sequential(
-                # input should be 27648
-                nn.Linear(self.embed_dim * self.num_patches, 4096),  # 27648 -> 16384
-                nn.ReLU(),
-                # nn.Linear(self.embed_dim * self.num_patches, self.num_classes),
-                nn.Linear(4096, self.num_classes),
-                nn.BatchNorm1d(self.num_classes),
-            )
+            # For base model 768: h3
+            # self.cls_head = nn.Sequential(
+            #     nn.Linear(self.num_patches * self.num_patches, 4096),
+            #     nn.ReLU(),
+            #     nn.Linear(4096, self.num_classes),
+            #     nn.BatchNorm1d(self.num_classes),
+            # )
+
+            # For base model 768: h4
+            # self.cls_head = nn.Sequential(
+            #     nn.Linear(self.embed_dim * self.num_patches, self.num_classes),
+            #     nn.BatchNorm1d(self.num_classes),
+            # )
+
+            # For base model 768: h5
+            # self.cls_head = nn.Sequential(
+            #     nn.Linear(self.embed_dim * self.num_patches, 16384),
+            #     nn.BatchNorm1d(16384),
+            #     nn.ReLU(),
+            #     nn.Dropout(0.5),
+            #     nn.Linear(16384, 4096),
+            #     nn.BatchNorm1d(4096),
+            #     nn.ReLU(),
+            #     nn.Dropout(0.5),
+            #     nn.Linear(4096, 1024),
+            #     nn.LayerNorm(1024),
+            #     nn.ReLU(),
+            #     nn.Dropout(0.5),
+            #     nn.Linear(1024, self.num_classes),
+            # )
+
+            self._init_head_weight()
+
+    def _init_head_weight(self):
+        for m in self.cls_head.modules():
+            if isinstance(m, nn.Linear):
+                nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
+                if m.bias is not None:
+                    nn.init.constant_(m.bias, 0)
+            elif isinstance(m, (nn.BatchNorm1d, nn.LayerNorm)):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
 
     def sinkhorn(self, A, n_iter=5):
         """
@@ -160,6 +200,9 @@ class JigsawVisionTransformer(VisionTransformer):
         if my_im is not None:
             my_im = self.patch_embed(my_im)
             my_im = self.forward_jigsaw(my_im)
+            # my_im = self.neck(my_im[:, 1:])
+            # my_im = my_im[:, 1:]
+            # my_im = self.jigsaw_head(my_im)  # WARN: for h3 only
             pred_cls = self.cls_head(my_im.view(my_im.shape[0], -1))
             outs.sup = pred_cls
         return outs

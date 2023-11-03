@@ -1,0 +1,184 @@
+batch_size: 256
+epochs: 50
+bce_loss: True
+unscale_lr: True
+rec: False
+freeze: False
+model: jigsaw_base_patch56_336
+input_size: 336
+permcls: 50
+drop: 0.0
+drop_path: 0.1
+model_ema: True
+model_ema_decay: 0.99996
+model_ema_force_cpu: False
+opt: adamw
+opt_eps: 1e-08
+opt_betas: None
+clip_grad: None
+momentum: 0.9
+weight_decay: 0.05
+sched: cosine
+lr: 0.001
+lr_noise: None
+lr_noise_pct: 0.67
+lr_noise_std: 1.0
+warmup_lr: 1e-06
+min_lr: 1e-05
+decay_epochs: 30
+warmup_epochs: 0
+cooldown_epochs: 10
+patience_epochs: 10
+decay_rate: 0.1
+color_jitter: 0.3
+aa: rand-m9-mstd0.5-inc1
+smoothing: None
+train_interpolation: bicubic
+repeated_aug: True
+train_mode: True
+ThreeAugment: False
+src: False
+reprob: 0.25
+remode: pixel
+recount: 1
+resplit: False
+mixup: 0.0
+cutmix: 0.0
+cutmix_minmax: None
+mixup_prob: 1.0
+mixup_switch_prob: 0.5
+mixup_mode: batch
+teacher_model: regnety_160
+teacher_path: 
+distillation_type: none
+distillation_alpha: 0.5
+distillation_tau: 1.0
+finetune: ./outputs/jigsaw_base_p56_336_f101_shuffle_in1ke10fte300/best_checkpoint_e100.pth
+attn_only: False
+data_path: ./data/food101/
+data_set: IMNET
+nb_classes: 50
+inat_category: name
+output_dir: ./outputs/in1ke80fte100_e100_1e-3_1024_h4_e50
+log_dir: ./logs/in1ke80fte100_e100_1e-3_1024_h4_e50
+device: cuda
+seed: 0
+resume: 
+start_epoch: 0
+eval: False
+eval_crop_ratio: 0.875
+dist_eval: False
+num_workers: 10
+pin_mem: True
+world_size: 4
+dist_url: env://
+local_rank: 0
+use_jigsaw: True
+use_cls: True
+lambda_rec: 0.1
+mask_ratio: 0.0
+rank: 0
+gpu: 0
+distributed: True
+dist_backend: nccl
+
+Evaluation on epoch 0: loss: 4.812, acc1_cls: 6.144, acc5_cls: 21.186
+{"train_lr": 0.001, "train_loss_total": 4.222467541694641, "train_loss_cls": 4.222467541694641, "train_acc1_cls": 3.857421875, "train_acc5_cls": 13.916015625, "epoch": 0, "n_parameters": 94941164}
+Evaluation on epoch 1: loss: 3.637, acc1_cls: 23.093, acc5_cls: 42.797
+{"train_lr": 0.001, "train_loss_total": 3.462400048971176, "train_loss_cls": 3.462400048971176, "train_acc1_cls": 20.21484375, "train_acc5_cls": 38.57421875, "epoch": 1, "n_parameters": 94941164}
+Evaluation on epoch 2: loss: 3.029, acc1_cls: 30.085, acc5_cls: 52.754
+{"train_lr": 0.0009990232305719944, "train_loss_total": 3.120600312948227, "train_loss_cls": 3.120600312948227, "train_acc1_cls": 32.568359375, "train_acc5_cls": 51.611328125, "epoch": 2, "n_parameters": 94941164}
+Evaluation on epoch 3: loss: 2.953, acc1_cls: 36.017, acc5_cls: 57.839
+{"train_lr": 0.0009960967771506667, "train_loss_total": 2.773907780647278, "train_loss_cls": 2.773907780647278, "train_acc1_cls": 43.06640625, "train_acc5_cls": 62.451171875, "epoch": 3, "n_parameters": 94941164}
+Evaluation on epoch 4: loss: 2.633, acc1_cls: 41.949, acc5_cls: 62.500
+{"train_lr": 0.000991232189110701, "train_loss_total": 2.474527657032013, "train_loss_cls": 2.474527657032013, "train_acc1_cls": 49.90234375, "train_acc5_cls": 69.140625, "epoch": 4, "n_parameters": 94941164}
+Evaluation on epoch 5: loss: 2.421, acc1_cls: 45.339, acc5_cls: 64.831
+{"train_lr": 0.0009844486647586723, "train_loss_total": 2.369578003883362, "train_loss_cls": 2.369578003883362, "train_acc1_cls": 53.7109375, "train_acc5_cls": 71.38671875, "epoch": 5, "n_parameters": 94941164}
+Evaluation on epoch 6: loss: 2.305, acc1_cls: 48.517, acc5_cls: 68.432
+{"train_lr": 0.0009757729755661011, "train_loss_total": 2.1252938210964203, "train_loss_cls": 2.1252938210964203, "train_acc1_cls": 61.23046875, "train_acc5_cls": 76.66015625, "epoch": 6, "n_parameters": 94941164}
+Evaluation on epoch 7: loss: 2.034, acc1_cls: 57.627, acc5_cls: 73.517
+{"train_lr": 0.0009652393605146844, "train_loss_total": 1.8824295103549957, "train_loss_cls": 1.8824295103549957, "train_acc1_cls": 67.08984375, "train_acc5_cls": 81.640625, "epoch": 7, "n_parameters": 94941164}
+Evaluation on epoch 8: loss: 2.000, acc1_cls: 58.051, acc5_cls: 73.517
+{"train_lr": 0.0009528893909706797, "train_loss_total": 1.7975269705057144, "train_loss_cls": 1.7975269705057144, "train_acc1_cls": 70.01953125, "train_acc5_cls": 82.958984375, "epoch": 8, "n_parameters": 94941164}
+Evaluation on epoch 9: loss: 1.876, acc1_cls: 61.017, acc5_cls: 76.483
+{"train_lr": 0.0009387718066217125, "train_loss_total": 1.6183070540428162, "train_loss_cls": 1.6183070540428162, "train_acc1_cls": 75.146484375, "train_acc5_cls": 87.3046875, "epoch": 9, "n_parameters": 94941164}
+Evaluation on epoch 10: loss: 1.831, acc1_cls: 64.407, acc5_cls: 78.602
+{"train_lr": 0.0009229423231234975, "train_loss_total": 1.5362258553504944, "train_loss_cls": 1.5362258553504944, "train_acc1_cls": 77.44140625, "train_acc5_cls": 87.548828125, "epoch": 10, "n_parameters": 94941164}
+Evaluation on epoch 11: loss: 1.852, acc1_cls: 63.771, acc5_cls: 80.085
+{"train_lr": 0.000905463412215599, "train_loss_total": 1.4640888720750809, "train_loss_cls": 1.4640888720750809, "train_acc1_cls": 78.22265625, "train_acc5_cls": 89.697265625, "epoch": 11, "n_parameters": 94941164}
+Evaluation on epoch 12: loss: 1.859, acc1_cls: 63.347, acc5_cls: 79.025
+{"train_lr": 0.0008864040551740157, "train_loss_total": 1.287132978439331, "train_loss_cls": 1.287132978439331, "train_acc1_cls": 84.130859375, "train_acc5_cls": 93.115234375, "epoch": 12, "n_parameters": 94941164}
+Evaluation on epoch 13: loss: 1.777, acc1_cls: 67.161, acc5_cls: 80.508
+{"train_lr": 0.0008658394705735987, "train_loss_total": 1.3038332909345627, "train_loss_cls": 1.3038332909345627, "train_acc1_cls": 83.740234375, "train_acc5_cls": 92.67578125, "epoch": 13, "n_parameters": 94941164}
+Evaluation on epoch 14: loss: 1.806, acc1_cls: 68.432, acc5_cls: 80.932
+{"train_lr": 0.0008438508174347009, "train_loss_total": 1.2390649616718292, "train_loss_cls": 1.2390649616718292, "train_acc1_cls": 84.5703125, "train_acc5_cls": 93.408203125, "epoch": 14, "n_parameters": 94941164}
+Evaluation on epoch 15: loss: 1.794, acc1_cls: 67.797, acc5_cls: 83.051
+{"train_lr": 0.0008205248749256015, "train_loss_total": 1.1246279031038284, "train_loss_cls": 1.1246279031038284, "train_acc1_cls": 88.57421875, "train_acc5_cls": 94.970703125, "epoch": 15, "n_parameters": 94941164}
+Evaluation on epoch 16: loss: 1.794, acc1_cls: 66.949, acc5_cls: 81.780
+{"train_lr": 0.0007959536998847743, "train_loss_total": 1.1005309224128723, "train_loss_cls": 1.1005309224128723, "train_acc1_cls": 87.353515625, "train_acc5_cls": 94.3359375, "epoch": 16, "n_parameters": 94941164}
+Evaluation on epoch 17: loss: 1.768, acc1_cls: 68.644, acc5_cls: 81.992
+{"train_lr": 0.0007702342635146033, "train_loss_total": 0.9712177217006683, "train_loss_cls": 0.9712177217006683, "train_acc1_cls": 90.72265625, "train_acc5_cls": 96.728515625, "epoch": 17, "n_parameters": 94941164}
+Evaluation on epoch 18: loss: 1.815, acc1_cls: 66.737, acc5_cls: 80.720
+{"train_lr": 0.000743468068680349, "train_loss_total": 0.9566380009055138, "train_loss_cls": 0.9566380009055138, "train_acc1_cls": 91.50390625, "train_acc5_cls": 96.19140625, "epoch": 18, "n_parameters": 94941164}
+Evaluation on epoch 19: loss: 1.714, acc1_cls: 69.915, acc5_cls: 84.534
+{"train_lr": 0.000715760749324711, "train_loss_total": 0.8735772967338562, "train_loss_cls": 0.8735772967338562, "train_acc1_cls": 92.578125, "train_acc5_cls": 96.484375, "epoch": 19, "n_parameters": 94941164}
+Evaluation on epoch 20: loss: 1.715, acc1_cls: 68.644, acc5_cls: 85.593
+{"train_lr": 0.0006872216535789157, "train_loss_total": 0.8195470198988914, "train_loss_cls": 0.8195470198988914, "train_acc1_cls": 93.75, "train_acc5_cls": 97.65625, "epoch": 20, "n_parameters": 94941164}
+Evaluation on epoch 21: loss: 1.710, acc1_cls: 71.398, acc5_cls: 83.898
+{"train_lr": 0.000657963412215599, "train_loss_total": 0.7993510663509369, "train_loss_cls": 0.7993510663509369, "train_acc1_cls": 93.9453125, "train_acc5_cls": 98.095703125, "epoch": 21, "n_parameters": 94941164}
+Evaluation on epoch 22: loss: 1.750, acc1_cls: 68.856, acc5_cls: 84.110
+{"train_lr": 0.000628101494146603, "train_loss_total": 0.744838036596775, "train_loss_cls": 0.744838036596775, "train_acc1_cls": 94.140625, "train_acc5_cls": 97.998046875, "epoch": 22, "n_parameters": 94941164}
+Evaluation on epoch 23: loss: 1.787, acc1_cls: 69.703, acc5_cls: 83.898
+{"train_lr": 0.0005977537507199338, "train_loss_total": 0.7129758223891258, "train_loss_cls": 0.7129758223891258, "train_acc1_cls": 95.166015625, "train_acc5_cls": 98.2421875, "epoch": 23, "n_parameters": 94941164}
+Evaluation on epoch 24: loss: 1.781, acc1_cls: 69.068, acc5_cls: 84.322
+{"train_lr": 0.0005670399506143307, "train_loss_total": 0.70975761115551, "train_loss_cls": 0.70975761115551, "train_acc1_cls": 95.1171875, "train_acc5_cls": 98.4375, "epoch": 24, "n_parameters": 94941164}
+Evaluation on epoch 25: loss: 1.785, acc1_cls: 68.644, acc5_cls: 84.534
+{"train_lr": 0.0005360813071670102, "train_loss_total": 0.6503650918602943, "train_loss_cls": 0.6503650918602943, "train_acc1_cls": 96.240234375, "train_acc5_cls": 98.828125, "epoch": 25, "n_parameters": 94941164}
+Evaluation on epoch 26: loss: 1.790, acc1_cls: 68.008, acc5_cls: 85.593
+{"train_lr": 0.000505, "train_loss_total": 0.6521489322185516, "train_loss_cls": 0.6521489322185516, "train_acc1_cls": 96.6796875, "train_acc5_cls": 98.486328125, "epoch": 26, "n_parameters": 94941164}
+Evaluation on epoch 27: loss: 1.796, acc1_cls: 69.915, acc5_cls: 85.593
+{"train_lr": 0.0004739186928329899, "train_loss_total": 0.5757024809718132, "train_loss_cls": 0.5757024809718132, "train_acc1_cls": 97.412109375, "train_acc5_cls": 98.974609375, "epoch": 27, "n_parameters": 94941164}
+Evaluation on epoch 28: loss: 1.786, acc1_cls: 70.339, acc5_cls: 84.958
+{"train_lr": 0.0004429600493856695, "train_loss_total": 0.5790998041629791, "train_loss_cls": 0.5790998041629791, "train_acc1_cls": 96.630859375, "train_acc5_cls": 99.072265625, "epoch": 28, "n_parameters": 94941164}
+Evaluation on epoch 29: loss: 1.760, acc1_cls: 69.703, acc5_cls: 84.958
+{"train_lr": 0.0004122462492800663, "train_loss_total": 0.5915413051843643, "train_loss_cls": 0.5915413051843643, "train_acc1_cls": 96.044921875, "train_acc5_cls": 98.92578125, "epoch": 29, "n_parameters": 94941164}
+Evaluation on epoch 30: loss: 1.761, acc1_cls: 70.763, acc5_cls: 85.593
+{"train_lr": 0.00038189850585339686, "train_loss_total": 0.5584152787923813, "train_loss_cls": 0.5584152787923813, "train_acc1_cls": 97.021484375, "train_acc5_cls": 99.4140625, "epoch": 30, "n_parameters": 94941164}
+Evaluation on epoch 31: loss: 1.762, acc1_cls: 70.975, acc5_cls: 85.805
+{"train_lr": 0.0003520365877844012, "train_loss_total": 0.5346792787313461, "train_loss_cls": 0.5346792787313461, "train_acc1_cls": 98.046875, "train_acc5_cls": 99.169921875, "epoch": 31, "n_parameters": 94941164}
+Evaluation on epoch 32: loss: 1.750, acc1_cls: 71.610, acc5_cls: 85.805
+{"train_lr": 0.00032277834642108455, "train_loss_total": 0.5180183798074722, "train_loss_cls": 0.5180183798074722, "train_acc1_cls": 98.046875, "train_acc5_cls": 99.267578125, "epoch": 32, "n_parameters": 94941164}
+Evaluation on epoch 33: loss: 1.739, acc1_cls: 72.034, acc5_cls: 86.229
+{"train_lr": 0.0002942392506752891, "train_loss_total": 0.505713053047657, "train_loss_cls": 0.505713053047657, "train_acc1_cls": 97.16796875, "train_acc5_cls": 99.21875, "epoch": 33, "n_parameters": 94941164}
+Evaluation on epoch 34: loss: 1.739, acc1_cls: 71.186, acc5_cls: 85.381
+{"train_lr": 0.0002665319313196509, "train_loss_total": 0.49890248104929924, "train_loss_cls": 0.49890248104929924, "train_acc1_cls": 97.36328125, "train_acc5_cls": 99.072265625, "epoch": 34, "n_parameters": 94941164}
+Evaluation on epoch 35: loss: 1.741, acc1_cls: 71.822, acc5_cls: 85.805
+{"train_lr": 0.00023976573648539653, "train_loss_total": 0.47516661509871483, "train_loss_cls": 0.47516661509871483, "train_acc1_cls": 97.4609375, "train_acc5_cls": 99.365234375, "epoch": 35, "n_parameters": 94941164}
+Evaluation on epoch 36: loss: 1.741, acc1_cls: 70.763, acc5_cls: 85.805
+{"train_lr": 0.00021404630011522585, "train_loss_total": 0.4823744036257267, "train_loss_cls": 0.4823744036257267, "train_acc1_cls": 97.509765625, "train_acc5_cls": 99.267578125, "epoch": 36, "n_parameters": 94941164}
+Evaluation on epoch 37: loss: 1.743, acc1_cls: 71.398, acc5_cls: 85.805
+{"train_lr": 0.00018947512507439858, "train_loss_total": 0.46062422543764114, "train_loss_cls": 0.46062422543764114, "train_acc1_cls": 98.53515625, "train_acc5_cls": 99.51171875, "epoch": 37, "n_parameters": 94941164}
+Evaluation on epoch 38: loss: 1.739, acc1_cls: 71.398, acc5_cls: 85.593
+{"train_lr": 0.00016614918256529907, "train_loss_total": 0.4584808275103569, "train_loss_cls": 0.4584808275103569, "train_acc1_cls": 98.046875, "train_acc5_cls": 99.31640625, "epoch": 38, "n_parameters": 94941164}
+Evaluation on epoch 39: loss: 1.730, acc1_cls: 71.610, acc5_cls: 86.017
+{"train_lr": 0.0001441605294264014, "train_loss_total": 0.45532727614045143, "train_loss_cls": 0.45532727614045143, "train_acc1_cls": 98.046875, "train_acc5_cls": 99.70703125, "epoch": 39, "n_parameters": 94941164}
+Evaluation on epoch 40: loss: 1.722, acc1_cls: 72.246, acc5_cls: 86.017
+{"train_lr": 0.00012359594482598438, "train_loss_total": 0.42787833139300346, "train_loss_cls": 0.42787833139300346, "train_acc1_cls": 98.388671875, "train_acc5_cls": 99.658203125, "epoch": 40, "n_parameters": 94941164}
+Evaluation on epoch 41: loss: 1.714, acc1_cls: 72.034, acc5_cls: 86.229
+{"train_lr": 0.00010453658778440107, "train_loss_total": 0.4247911497950554, "train_loss_cls": 0.4247911497950554, "train_acc1_cls": 98.828125, "train_acc5_cls": 99.462890625, "epoch": 41, "n_parameters": 94941164}
+Evaluation on epoch 42: loss: 1.706, acc1_cls: 72.246, acc5_cls: 86.229
+{"train_lr": 8.705767687650265e-05, "train_loss_total": 0.46395016461610794, "train_loss_cls": 0.46395016461610794, "train_acc1_cls": 97.65625, "train_acc5_cls": 99.267578125, "epoch": 42, "n_parameters": 94941164}
+Evaluation on epoch 43: loss: 1.701, acc1_cls: 72.881, acc5_cls: 86.229
+{"train_lr": 7.122819337828752e-05, "train_loss_total": 0.4381554611027241, "train_loss_cls": 0.4381554611027241, "train_acc1_cls": 98.291015625, "train_acc5_cls": 99.609375, "epoch": 43, "n_parameters": 94941164}
+Evaluation on epoch 44: loss: 1.699, acc1_cls: 72.034, acc5_cls: 86.229
+{"train_lr": 5.711060902932042e-05, "train_loss_total": 0.4452446177601814, "train_loss_cls": 0.4452446177601814, "train_acc1_cls": 98.046875, "train_acc5_cls": 99.51171875, "epoch": 44, "n_parameters": 94941164}
+Evaluation on epoch 45: loss: 1.693, acc1_cls: 71.610, acc5_cls: 86.229
+{"train_lr": 4.4760639485315584e-05, "train_loss_total": 0.4323135204613209, "train_loss_cls": 0.4323135204613209, "train_acc1_cls": 98.046875, "train_acc5_cls": 99.658203125, "epoch": 45, "n_parameters": 94941164}
+Evaluation on epoch 46: loss: 1.691, acc1_cls: 72.034, acc5_cls: 86.229
+{"train_lr": 3.4227024433899005e-05, "train_loss_total": 0.4218263812363148, "train_loss_cls": 0.4218263812363148, "train_acc1_cls": 98.486328125, "train_acc5_cls": 99.658203125, "epoch": 46, "n_parameters": 94941164}
+Evaluation on epoch 47: loss: 1.688, acc1_cls: 71.398, acc5_cls: 86.017
+{"train_lr": 2.5551335241327672e-05, "train_loss_total": 0.42572686448693275, "train_loss_cls": 0.42572686448693275, "train_acc1_cls": 98.6328125, "train_acc5_cls": 99.609375, "epoch": 47, "n_parameters": 94941164}
+Evaluation on epoch 48: loss: 1.685, acc1_cls: 71.398, acc5_cls: 86.017
+{"train_lr": 1.8767810889299086e-05, "train_loss_total": 0.4184715077280998, "train_loss_cls": 0.4184715077280998, "train_acc1_cls": 98.4375, "train_acc5_cls": 99.560546875, "epoch": 48, "n_parameters": 94941164}
+Evaluation on epoch 49: loss: 1.681, acc1_cls: 71.822, acc5_cls: 85.805
+{"train_lr": 1.3903222849333507e-05, "train_loss_total": 0.43263327702879906, "train_loss_cls": 0.43263327702879906, "train_acc1_cls": 98.33984375, "train_acc5_cls": 99.609375, "epoch": 49, "n_parameters": 94941164}
