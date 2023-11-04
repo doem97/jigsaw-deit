@@ -389,11 +389,49 @@ def infer_perm(data_loader, model, device):
 
         # compute output
         with torch.cuda.amp.autocast():
-            output = model(images)
+            output = model(x=images)
             pred_jigsaw = output.pred_jigsaw
 
         # convert logits to hard labels
         pred_labels = torch.argmax(pred_jigsaw, dim=1)
+
+        # reshape and convert to list of lists
+        pred_labels_list = pred_labels.view(-1, patch_num_per_img).tolist()
+        all_pred_labels.extend(pred_labels_list)
+
+        targets_list = targets.tolist()
+        all_targets.extend(targets_list)
+
+    # gather the stats from all processes
+    metric_logger.synchronize_between_processes()
+
+    return all_pred_labels, all_targets
+
+
+@torch.no_grad()
+def infer_cls(data_loader, model, device):
+    metric_logger = utils.MetricLogger(delimiter="  ")
+    header = "Test:"
+
+    # switch to evaluation mode
+    model.eval()
+
+    all_pred_labels = []
+    all_targets = []
+
+    patch_num_per_img = 36
+
+    for images, targets in metric_logger.log_every(data_loader, 10, header):
+        images = images.to(device, non_blocking=True)
+        targets = targets.to(device, non_blocking=True)
+
+        # compute output
+        with torch.cuda.amp.autocast():
+            output = model(my_im=images)
+            pred_cls = output.sup
+
+        # convert logits to hard labels
+        pred_labels = torch.argmax(pred_cls, dim=1)
 
         # reshape and convert to list of lists
         pred_labels_list = pred_labels.view(-1, patch_num_per_img).tolist()
