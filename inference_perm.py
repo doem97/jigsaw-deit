@@ -19,17 +19,17 @@ def get_args_parser():
     parser = argparse.ArgumentParser(
         "DeiT training and evaluation script", add_help=False
     )
-    parser.add_argument("--batch-size", default=64, type=int)
+    parser.add_argument("--batch-size", default=8, type=int)
 
     # Model parameters
     parser.add_argument(
         "--model",
-        default="jigsaw_base_patch16_224",
+        default="jigsaw_base_patch56_336",
         type=str,
         metavar="MODEL",
         help="Name of model to train",
     )
-    parser.add_argument("--input-size", default=224, type=int, help="images input size")
+    parser.add_argument("--input-size", default=336, type=int, help="images input size")
     parser.add_argument(
         "--nb-classes", default=1000, type=int, help="images input size"
     )
@@ -37,13 +37,13 @@ def get_args_parser():
     # Dataset parameters
     parser.add_argument(
         "--data-path",
-        default="/datasets01/imagenet_full_size/061417/",
+        default="./data/cs/train",
         type=str,
         help="dataset path",
     )
     parser.add_argument(
         "--data-set",
-        default="IMNET",
+        default="CS",
         type=str,
         help="Image Net dataset path",
     )
@@ -54,7 +54,11 @@ def get_args_parser():
         "--device", default="cuda", help="device to use for training / testing"
     )
     parser.add_argument("--seed", default=0, type=int)
-    parser.add_argument("--resume", default="", help="resume from checkpoint")
+    parser.add_argument(
+        "--resume",
+        default="./outputs/jigsaw_base_p56_336_f101_shuffle_in1ke10fte300/best_checkpoint_e200.pth",
+        help="resume from checkpoint",
+    )
     parser.add_argument(
         "--start_epoch", default=0, type=int, metavar="N", help="start epoch"
     )
@@ -88,6 +92,8 @@ def get_args_parser():
     # jigsaw
     parser.add_argument("--use-jigsaw", action="store_true")
     parser.set_defaults(use_jigsaw=True)
+    parser.add_argument("--use-cls", action="store_true")
+    parser.set_defaults(use_cls=False)
 
     # WARN: Something I am not sure
     parser.add_argument("--mask-ratio", type=float, default=0.0)
@@ -101,10 +107,13 @@ def get_args_parser():
     parser.add_argument(
         "--drop-path",
         type=float,
-        default=0.1,
+        default=0.0,
         metavar="PCT",
         help="Drop path rate (default: 0.1)",
     )
+    # parser.add_argument(
+    #     "--local_rank", default=0, help="url used to set up distributed training"
+    # )
 
     return parser
 
@@ -122,26 +131,22 @@ def main(args):
     np.random.seed(seed)
     cudnn.benchmark = True
 
-    dataset_val, _ = build_dataset(is_train=False, args=args)
+    dataset_val, _ = build_dataset(is_train=False, data_set=args.data_set, args=args)
 
-    if True:  # args.distributed:
-        num_tasks = utils.get_world_size()
-        global_rank = utils.get_rank()
-        if args.dist_eval:
-            if len(dataset_val) % num_tasks != 0:
-                print(
-                    "Warning: Enabling distributed evaluation with an eval dataset not divisible by process number. "
-                    "This will slightly alter validation results as extra duplicate entries are added to achieve "
-                    "equal num of samples per-process."
-                )
-            sampler_val = torch.utils.data.DistributedSampler(
-                dataset_val, num_replicas=num_tasks, rank=global_rank, shuffle=False
+    num_tasks = utils.get_world_size()
+    global_rank = utils.get_rank()
+    if args.dist_eval:
+        if len(dataset_val) % num_tasks != 0:
+            print(
+                "Warning: Enabling distributed evaluation with an eval dataset not divisible by process number. "
+                "This will slightly alter validation results as extra duplicate entries are added to achieve "
+                "equal num of samples per-process."
             )
-        else:
-            sampler_val = torch.utils.data.SequentialSampler(dataset_val)
-    # else:
-    #     sampler_train = torch.utils.data.RandomSampler(dataset_train)
-    #     sampler_val = torch.utils.data.SequentialSampler(dataset_val)
+        sampler_val = torch.utils.data.DistributedSampler(
+            dataset_val, num_replicas=num_tasks, rank=global_rank, shuffle=False
+        )
+    else:
+        sampler_val = torch.utils.data.SequentialSampler(dataset_val)
 
     data_loader_val = torch.utils.data.DataLoader(
         dataset_val,
@@ -189,8 +194,62 @@ def main(args):
             drop_rate=args.drop,
             drop_path_rate=args.drop_path,
         )
-    elif args.model == "jigsaw_base_p56_336":
+    elif args.model == "jigsaw_base_patch56_336":
         model = models_jigsaw.jigsaw_base_patch56_336(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_small_patch56_336":
+        model = models_jigsaw.jigsaw_small_patch56_336(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_tiny_patch56_336":
+        model = models_jigsaw.jigsaw_tiny_patch56_336(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_r_base_patch56_336":
+        model = models_jigsaw.jigsaw_r_base_patch56_336(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_base_patch112_336":
+        model = models_jigsaw.jigsaw_base_patch112_336(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_base_patch168_336":
+        model = models_jigsaw.jigsaw_base_patch168_336(
+            mask_ratio=args.mask_ratio,
+            use_jigsaw=args.use_jigsaw,
+            pretrained=False,
+            num_classes=args.nb_classes,
+            drop_rate=args.drop,
+            drop_path_rate=args.drop_path,
+        )
+    elif args.model == "jigsaw_tiny_patch168_336":
+        model = models_jigsaw.jigsaw_tiny_patch168_336(
             mask_ratio=args.mask_ratio,
             use_jigsaw=args.use_jigsaw,
             pretrained=False,
@@ -220,7 +279,25 @@ def main(args):
             )
         else:
             checkpoint = torch.load(args.resume, map_location="cpu")
-        model_without_ddp.load_state_dict(checkpoint["model"])
+
+        checkpoint_model = checkpoint["model"]
+        state_dict = model.state_dict()
+        keys_to_del = [
+            "head.weight",
+            "head.bias",
+            "head_dist.weight",
+            "head_dist.bias",
+        ]
+        for k in keys_to_del:
+            if k in checkpoint_model:
+                print(f"Removing key {k} from pretrained checkpoint")
+                del checkpoint_model[k]
+        for k in list(checkpoint_model.keys()):
+            if k.startswith("cls_head."):  # Check if the key starts with "cls_head."
+                print(f"Removing key {k} from pretrained checkpoint")
+                del checkpoint_model[k]
+
+        model_without_ddp.load_state_dict(checkpoint["model"], strict=False)
 
     if args.eval:
         start_time = time.time()

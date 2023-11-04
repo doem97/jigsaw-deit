@@ -61,18 +61,17 @@ class JigsawVisionTransformer(VisionTransformer):
             #     nn.BatchNorm1d(self.num_classes),
             # )  # ATTN: Original try: classifier head with three layers for small
 
-            # For base model 768: h1
-            self.cls_head = nn.Sequential(
-                # input should be 27648
-                nn.Linear(self.embed_dim * self.num_patches, 16384),  # 27648 -> 16384
-                nn.ReLU(),
-                nn.Linear(16384, 4096),
-                nn.ReLU(),
-                nn.Linear(4096, self.num_classes),
-                nn.BatchNorm1d(self.num_classes),
-            )
+            # For base model 768: h1 # 73(e50) 76(e100)
+            # self.cls_head = nn.Sequential(
+            #     nn.Linear(self.embed_dim * self.num_patches, 16384),  # 27648 -> 16384
+            #     nn.ReLU(),
+            #     nn.Linear(16384, 4096),
+            #     nn.ReLU(),
+            #     nn.Linear(4096, self.num_classes),
+            #     nn.BatchNorm1d(self.num_classes),
+            # )
 
-            # For base model 768: h2
+            # For base model 768: h2 # 75(e100)
             # self.cls_head = nn.Sequential(
             #     nn.Linear(self.embed_dim * self.num_patches, 4096),  # 27648 -> 16384
             #     nn.ReLU(),
@@ -80,15 +79,18 @@ class JigsawVisionTransformer(VisionTransformer):
             #     nn.BatchNorm1d(self.num_classes),
             # )
 
-            # For base model 768: h3
-            # self.cls_head = nn.Sequential(
-            #     nn.Linear(self.num_patches * self.num_patches, 4096),
-            #     nn.ReLU(),
-            #     nn.Linear(4096, self.num_classes),
-            #     nn.BatchNorm1d(self.num_classes),
-            # )
+            # For base model 768: h3 hoh # input is bs, 36, 36, (or bs, num_patches, num_patches)
+            # I need to pooling to (bs, 36) and then learn 36 -> 50
+            self.cls_head = nn.Sequential(
+                nn.ReLU(),
+                nn.Linear(self.num_patches * self.num_patches, 2048),
+                # Smaller hidden layer
+                nn.ReLU(),
+                nn.Dropout(p=0.5),  # Adding dropout for regularization
+                nn.Linear(2048, self.num_classes),
+            )
 
-            # For base model 768: h4
+            # For base model 768: h4 # 71(e50) 72(e100)
             # self.cls_head = nn.Sequential(
             #     nn.Linear(self.embed_dim * self.num_patches, self.num_classes),
             #     nn.BatchNorm1d(self.num_classes),
@@ -97,18 +99,15 @@ class JigsawVisionTransformer(VisionTransformer):
             # For base model 768: h5
             # self.cls_head = nn.Sequential(
             #     nn.Linear(self.embed_dim * self.num_patches, 16384),
-            #     nn.BatchNorm1d(16384),
             #     nn.ReLU(),
             #     nn.Dropout(0.5),
-            #     nn.Linear(16384, 4096),
-            #     nn.BatchNorm1d(4096),
+            #     nn.Linear(16384, 4096),·
             #     nn.ReLU(),
             #     nn.Dropout(0.5),
             #     nn.Linear(4096, 1024),
-            #     nn.LayerNorm(1024),
             #     nn.ReLU(),
-            #     nn.Dropout(0.5),
             #     nn.Linear(1024, self.num_classes),
+            #     nn.BatchNorm1d(self.num_classes),
             # )
 
             self._init_head_weight()
@@ -190,19 +189,16 @@ class JigsawVisionTransformer(VisionTransformer):
         outs = Munch()
         if x is not None:
             x = self.patch_embed(x)
-            x, target_jigsaw = self.random_masking(x, target, self.mask_ratio)
+            if target is not None:
+                x, target_jigsaw = self.random_masking(x, target, self.mask_ratio)
+                outs.gt_jigsaw = target_jigsaw
             x = self.forward_jigsaw(x)
             pred_jigsaw = self.jigsaw_head(x)
-            # # dim: [N * num_patches, num_patches]
             outs.pred_jigsaw = pred_jigsaw
-            # # dim: [N * num_patches]
-            outs.gt_jigsaw = target_jigsaw
         if my_im is not None:
             my_im = self.patch_embed(my_im)
             my_im = self.forward_jigsaw(my_im)
-            # my_im = self.neck(my_im[:, 1:])
-            # my_im = my_im[:, 1:]
-            # my_im = self.jigsaw_head(my_im)  # WARN: for h3 only
+            my_im = self.jigsaw_head(my_im)  # WARN: for h3 only
             pred_cls = self.cls_head(my_im.view(my_im.shape[0], -1))
             outs.sup = pred_cls
         return outs

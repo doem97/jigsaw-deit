@@ -7,7 +7,7 @@
 
 export CUDA_VISIBLE_DEVICES="0,1,2,3"
 export THREADS=4
-export CONFIG_ID="in1ke80fte100_e100_1e-3_1024_h1_e100"
+export CONFIG_ID="in1ke80fte100_e100_1e-3_1024_h1+n_e100"
 
 torchrun --nproc_per_node=$THREADS \
     --master_port 30000 \
@@ -24,7 +24,8 @@ torchrun --nproc_per_node=$THREADS \
     --bce-loss \
     --data-path "./data/food101/" \
     --data-set IMNET \
-    --finetune "./outputs/jigsaw_base_p56_336_f101_shuffle_in1ke10fte300/best_checkpoint_e100.pth" \
+    --finetune "./outputs/jigsaw_base_p56_336_f101_shuffle_in1ke10fte300/best_checkpoint_e200.pth" \
     --use-cls \
+    --freeze \
     --output_dir ./outputs/${CONFIG_ID} \
     --log_dir ./logs/${CONFIG_ID}
